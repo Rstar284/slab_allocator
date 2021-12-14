@@ -181,12 +181,12 @@ impl Heap {
     }
 }
 
-unsafe impl GlobalAlloc for Heap {
-    unsafe fn alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocError> {
+unsafe impl Allocator for Heap {
+    unsafe fn allocator(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocError> {
         self.allocate(layout)
     }
 
-    unsafe fn dealloc(&mut self, ptr: NonNull<u8>, layout: Layout) {
+    unsafe fn deallocator(&mut self, ptr: NonNull<u8>, layout: Layout) {
         self.deallocate(ptr, layout)
     }
 
@@ -223,8 +223,8 @@ impl Deref for LockedHeap {
     }
 }
 
-unsafe impl GlobalAlloc for LockedHeap {
-    unsafe fn alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocError> {
+unsafe impl Allocator for LockedHeap {
+    unsafe fn allocator(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocError> {
         if let Some(ref mut heap) = *self.0.lock() {
             heap.allocate(layout)
         } else {
@@ -232,7 +232,7 @@ unsafe impl GlobalAlloc for LockedHeap {
         }
     }
 
-    unsafe fn dealloc(&mut self, ptr: NonNull<u8>, layout: Layout) {
+    unsafe fn deallocator(&mut self, ptr: NonNull<u8>, layout: Layout) {
         if let Some(ref mut heap) = *self.0.lock() {
             heap.deallocate(ptr, layout)
         } else {
