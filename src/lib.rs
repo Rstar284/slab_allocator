@@ -1,5 +1,4 @@
 #![feature(alloc, allocator_api)]
-#![feature(const_fn)]
 #![no_std]
 
 extern crate alloc;
@@ -12,7 +11,7 @@ mod slab;
 
 use core::ops::Deref;
 
-use alloc::alloc::{Alloc, AllocErr, Layout};
+use alloc::alloc::{Alloc, AllocError, Layout};
 use core::alloc::GlobalAlloc;
 use core::ptr::NonNull;
 use slab::Slab;
