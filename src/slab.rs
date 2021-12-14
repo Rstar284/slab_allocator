@@ -1,4 +1,4 @@
-use alloc::alloc::{AllocErr, Layout};
+use alloc::alloc::{AllocError, Layout};
 use core::ptr::NonNull;
 
 pub struct Slab {
