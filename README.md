@@ -1,7 +1,5 @@
 # slab_allocator
 
-[![Build Status](https://travis-ci.org/weclaw1/slab_allocator.svg?branch=master)](https://travis-ci.org/weclaw1/slab_allocator)
-
 [Documentation](https://docs.rs/crate/slab_allocator)
 
 ## Usage
