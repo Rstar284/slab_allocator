@@ -11,7 +11,7 @@ mod slab;
 
 use core::ops::Deref;
 
-use alloc::alloc::{Alloc, AllocError, Layout};
+use alloc::alloc::{Allocator, AllocError, Layout};
 use core::alloc::GlobalAlloc;
 use core::ptr::NonNull;
 use slab::Slab;
@@ -107,7 +107,7 @@ impl Heap {
     /// beginning of that chunk if it was successful. Else it returns `Err`.
     /// This function finds the slab of lowest size which can still accomodate the given chunk.
     /// The runtime is in `O(1)` for chunks of size <= 4096, and `O(n)` when chunk size is > 4096,
-    pub fn allocate(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
+    pub fn allocate(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocError> {
         match Heap::layout_to_allocator(&layout) {
             HeapAllocator::Slab64Bytes => self.slab_64_bytes.allocate(layout),
             HeapAllocator::Slab128Bytes => self.slab_128_bytes.allocate(layout),
@@ -181,8 +181,8 @@ impl Heap {
     }
 }
 
-unsafe impl Alloc for Heap {
-    unsafe fn alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
+unsafe impl Allocator for Heap {
+    unsafe fn alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocError> {
         self.allocate(layout)
     }
 
@@ -223,8 +223,8 @@ impl Deref for LockedHeap {
     }
 }
 
-unsafe impl<'a> Alloc for &'a LockedHeap {
-    unsafe fn alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
+unsafe impl<'a> Allocator for &'a LockedHeap {
+    unsafe fn alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocError> {
         if let Some(ref mut heap) = *self.0.lock() {
             heap.allocate(layout)
         } else {
